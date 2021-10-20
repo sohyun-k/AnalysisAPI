@@ -1,0 +1,10 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "AnalysisAPI"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-q5ifs3fvgeyj"
+s3_prefix = "AnalysisAPI"
+region = "ap-northeast-2"
+capabilities = "CAPABILITY_IAM"
+image_repositories = ["AnalysisAPIFunction=229916129113.dkr.ecr.ap-northeast-2.amazonaws.com/analysisapid0093b8e/analysisapifunctiond8e7dbd8repo"]
