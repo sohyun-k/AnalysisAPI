@@ -1,6 +1,6 @@
-const { client } = require("../connection.js");
+import { client } from "../connection";
 
-const create = async (
+export default async (
   id,
   userId,
   emotion,
@@ -13,14 +13,15 @@ const create = async (
     'INSERT INTO "Mory" (id, "userId", emotion, latitude, longitude, content, "createdAt") VALUES($1, $2, $3, $4, $5, $6, $7)';
   const values = [id, userId, emotion, latitude, longitude, content, createdAt];
 
-  client.connect();
-  const res = await client.query(sql, values);
-  client.end();
+  return new Promise((resolve, reject) => {
+    client.query(sql, values, (err, result) => {
+      if (err) reject(err);
 
-  console.log(res);
-  return res;
-};
-
-module.exports = {
-  create,
+      if (result) {
+        resolve(true);
+      } else {
+        resolve(undefined);
+      }
+    });
+  });
 };

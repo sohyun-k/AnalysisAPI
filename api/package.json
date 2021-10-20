@@ -11,6 +11,7 @@
     "pg": "^8.7.1"
   },
   "scripts": {
+    "build": "tsc",
     "test": "mocha tests/unit/"
   },
   "devDependencies": {
@@ -19,6 +20,7 @@
     "@types/pg": "^8.6.1",
     "aws-sdk": "^2.1011.0",
     "chai": "^4.2.0",
-    "mocha": "^8.2.1"
+    "mocha": "^8.2.1",
+    "typescript": "^4.4.4"
   }
 }

@@ -1,6 +1,7 @@
 FROM public.ecr.aws/lambda/nodejs:14
 
-COPY . .
+COPY ./dist .
+COPY package.json .
 
 RUN npm install
 
