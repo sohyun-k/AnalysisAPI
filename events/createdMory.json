@@ -1,11 +1,12 @@
 {
   "field": "createdMory",
   "arguments": {
-    "id": "m#1634711423#ae7efcad-947e-4168-b3ce-3cb5e599262e",
-    "userId": "inhwan",
-    "emotion": "happy",
-    "location": "{\"coordinate\":[123.0,120.0],\"type\":\"POINT\"}",
+    "id": "m#1635878783#9dbda16c-7cba-49f3-aa03-79e80bae860f",
+    "userId": "PJoeuYq0O9ZjJxJoLYLZKaBeupn2",
+    "emotion": "proud",
+    "latitude": 122,
+    "longitude": 122,
     "text": "우리 오늘도 화이팅~",
-    "createdAt": "2021-10-20T06:30:19Z"
+    "createdAt": "2021-10-20T06:30:39Z"
   }
 }

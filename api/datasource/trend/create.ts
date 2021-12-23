@@ -9,8 +9,7 @@ export default (userId, type, emotion, date, moryIds) => {
     client.query(sql, values, (err, result) => {
       if (err) reject(err);
 
-      console.log("id", result.rows[0].id);
-      resolve(result.oid);
+      resolve(result.rows[0].id);
     });
   });
 };

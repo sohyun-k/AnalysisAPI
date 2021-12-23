@@ -37,28 +37,23 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 var connection_1 = require("../connection");
-exports["default"] = (function (emotion, id, userId) { return __awaiter(void 0, void 0, void 0, function () {
+exports["default"] = (function (emotion, id, count, userId) { return __awaiter(void 0, void 0, void 0, function () {
     var updateContinuousTrend, values;
     return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                updateContinuousTrend = 'UPDATE "User" SET "lastContinuousTrendEmotion" = $1, "lastContinuousTrendId" = $2 WHERE id = $3';
-                values = [emotion, id, userId];
-                return [4 /*yield*/, connection_1.client.connect()];
-            case 1:
-                _a.sent();
-                return [4 /*yield*/, connection_1.client
-                        .query(updateContinuousTrend, values)
-                        .then(function (result) {
-                        return true;
-                    })["catch"](function (error) {
-                        console.error(error);
-                        return false;
-                    })["finally"](function () {
-                        connection_1.client.end();
-                    })];
-            case 2: return [2 /*return*/, _a.sent()];
-        }
+        updateContinuousTrend = 'UPDATE "User" SET "lastContinuousTrendEmotion" = $1, "lastContinuousTrendId" = $2, "lastContinuousTrendCount" = $3 WHERE id = $4';
+        values = [emotion, id, count, userId];
+        return [2 /*return*/, new Promise(function (resolve, reject) {
+                connection_1.client.query(updateContinuousTrend, values, function (err, result) {
+                    if (err)
+                        reject(err);
+                    if (result) {
+                        resolve(true);
+                    }
+                    else {
+                        resolve(false);
+                    }
+                });
+            })];
     });
 }); });
 //# sourceMappingURL=updateContinuousTrend.js.map

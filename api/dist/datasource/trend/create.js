@@ -8,8 +8,7 @@ exports["default"] = (function (userId, type, emotion, date, moryIds) {
         connection_1.client.query(sql, values, function (err, result) {
             if (err)
                 reject(err);
-            console.log("id", result.rows[0].id);
-            resolve(result.oid);
+            resolve(result.rows[0].id);
         });
     });
 });

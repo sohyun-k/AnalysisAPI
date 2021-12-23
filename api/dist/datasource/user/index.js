@@ -7,11 +7,13 @@ var __createBinding = (this && this.__createBinding) || (Object.create ? (functi
     o[k2] = m[k];
 }));
 exports.__esModule = true;
-exports.getUser = exports.updateContinuousTrend = exports.createUser = void 0;
+exports.updatePastTrend = exports.getUser = exports.updateContinuousTrend = exports.createUser = void 0;
 var create_1 = require("./create");
 __createBinding(exports, create_1, "default", "createUser");
 var updateContinuousTrend_1 = require("./updateContinuousTrend");
 __createBinding(exports, updateContinuousTrend_1, "default", "updateContinuousTrend");
 var getItem_1 = require("./getItem");
 __createBinding(exports, getItem_1, "default", "getUser");
+var updatePastTrend_1 = require("./updatePastTrend");
+__createBinding(exports, updatePastTrend_1, "default", "updatePastTrend");
 //# sourceMappingURL=index.js.map

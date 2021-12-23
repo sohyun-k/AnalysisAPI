@@ -38,62 +38,69 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 exports.calcContinuousTrend = void 0;
 var mory_1 = require("../../../datasource/mory");
+var notification_1 = require("../../../datasource/notification");
 var trend_1 = require("../../../datasource/trend");
 var user_1 = require("../../../datasource/user");
 var calcContinuousTrend = function (userId) { return __awaiter(void 0, void 0, void 0, function () {
-    var user, mories, _firstEmotion, hasAllSameEmotion, trend, _, _;
+    var user, mories, lastEmotion, newTrendId;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, user_1.getUser)(userId)];
+            case 0: return [4 /*yield*/, user_1.getUser(userId)];
             case 1:
                 user = _a.sent();
-                console.log("user", user);
-                if (!(user === undefined)) return [3 /*break*/, 3];
-                return [4 /*yield*/, (0, user_1.createUser)(userId)];
+                if (!!user) return [3 /*break*/, 4];
+                return [4 /*yield*/, user_1.createUser(userId)];
             case 2:
                 _a.sent();
-                _a.label = 3;
-            case 3: return [4 /*yield*/, (0, mory_1.getRecentItems)(userId)];
-            case 4:
-                mories = _a.sent();
-                console.log("mories", mories.length);
-                // emotion 의 개수가 3개인지 점검
-                if (mories.length !== 3) {
-                    return [2 /*return*/];
-                }
-                _firstEmotion = mories[0].emotion;
-                hasAllSameEmotion = true;
-                mories.forEach(function (v) {
-                    if (v.emotion !== _firstEmotion) {
-                        hasAllSameEmotion = false;
-                    }
-                });
-                if (!!hasAllSameEmotion) return [3 /*break*/, 6];
-                return [4 /*yield*/, (0, user_1.updateContinuousTrend)(null, null, userId)];
+                return [4 /*yield*/, user_1.getUser(userId)];
+            case 3:
+                user = _a.sent();
+                _a.label = 4;
+            case 4: return [4 /*yield*/, mory_1.getRecentItems(userId)];
             case 5:
-                _a.sent();
-                _a.label = 6;
+                mories = _a.sent();
+                lastEmotion = mories[0].emotion;
+                if (!(mories.length !== 3)) return [3 /*break*/, 9];
+                if (!(mories.length === 2)) return [3 /*break*/, 7];
+                if (!(user.lastContinuousTrendEmotion === lastEmotion)) return [3 /*break*/, 7];
+                return [4 /*yield*/, user_1.updateContinuousTrend(lastEmotion, null, user.lastContinuousTrendCount + 1, userId)];
             case 6:
-                if (!hasAllSameEmotion) return [3 /*break*/, 11];
-                if (!(user.lastContinuousTrendEmotion &&
-                    user.lastContinuousTrendEmotion === _firstEmotion)) return [3 /*break*/, 7];
+                _a.sent();
                 return [2 /*return*/];
-            case 7:
-                if (!user.lastContinuousTrendId) return [3 /*break*/, 9];
-                return [4 /*yield*/, (0, trend_1.getTrend)(user.lastContinuousTrendId)];
+            case 7: return [4 /*yield*/, user_1.updateContinuousTrend(lastEmotion, null, 1, userId)];
             case 8:
-                trend = _a.sent();
-                _ = trend.moryIds.some(function (id) { return id in mories; });
-                console.log("result", _);
-                if (_) {
-                    return [2 /*return*/];
-                }
-                return [3 /*break*/, 11];
-            case 9: return [4 /*yield*/, (0, trend_1.createTrend)(userId, "continuous", _firstEmotion, new Date(), mories.map(function (v) { return v.id; }))];
+                _a.sent();
+                return [2 /*return*/];
+            case 9:
+                if (!(user.lastContinuousTrendEmotion &&
+                    user.lastContinuousTrendEmotion === lastEmotion)) return [3 /*break*/, 15];
+                if (!(user.lastContinuousTrendCount === 2)) return [3 /*break*/, 12];
+                return [4 /*yield*/, trend_1.createTrend(userId, "continuous", lastEmotion, new Date(), mories.map(function (v) { return v.id; }))];
             case 10:
-                _ = _a.sent();
-                _a.label = 11;
-            case 11: return [2 /*return*/];
+                newTrendId = _a.sent();
+                notification_1.pushContinuousTrend(userId, newTrendId, lastEmotion, new Date(), mories.map(function (v) { return v.id; }));
+                // update
+                return [4 /*yield*/, user_1.updateContinuousTrend(null, newTrendId, 0, userId)];
+            case 11:
+                // update
+                _a.sent();
+                return [3 /*break*/, 14];
+            case 12: 
+            // update
+            return [4 /*yield*/, user_1.updateContinuousTrend(lastEmotion, null, user.lastContinuousTrendCount + 1, userId)];
+            case 13:
+                // update
+                _a.sent();
+                _a.label = 14;
+            case 14: return [3 /*break*/, 17];
+            case 15: 
+            // emotion 이 다른 경우
+            return [4 /*yield*/, user_1.updateContinuousTrend(lastEmotion, null, 1, userId)];
+            case 16:
+                // emotion 이 다른 경우
+                _a.sent();
+                _a.label = 17;
+            case 17: return [2 /*return*/];
         }
     });
 }); };

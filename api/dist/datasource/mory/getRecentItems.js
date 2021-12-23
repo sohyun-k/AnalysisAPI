@@ -37,6 +37,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 var connection_1 = require("../connection");
+/**
+ * 가장 최신 mory 3개를 반환
+ */
 exports["default"] = (function (userId) { return __awaiter(void 0, void 0, void 0, function () {
     var sql, values;
     return __generator(this, function (_a) {

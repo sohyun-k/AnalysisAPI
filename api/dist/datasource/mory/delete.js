@@ -40,20 +40,20 @@ var connection_1 = require("../connection");
 exports["default"] = (function (id) { return __awaiter(void 0, void 0, void 0, function () {
     var sql, values;
     return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                sql = 'DELETE FROM "Mory" WHERE id = $1';
-                values = [id];
-                return [4 /*yield*/, connection_1.client
-                        .query(sql, values)
-                        .then(function (result) { return true; })["catch"](function (error) {
-                        console.error(error);
-                        return false;
-                    })["finally"](function () {
-                        connection_1.client.end();
-                    })];
-            case 1: return [2 /*return*/, _a.sent()];
-        }
+        sql = 'DELETE FROM "Mory" WHERE id = $1';
+        values = [id];
+        return [2 /*return*/, new Promise(function (resolve, reject) {
+                connection_1.client.query(sql, values, function (err, result) {
+                    if (err)
+                        reject(err);
+                    if (result) {
+                        resolve(true);
+                    }
+                    else {
+                        resolve(false);
+                    }
+                });
+            })];
     });
 }); });
 //# sourceMappingURL=delete.js.map

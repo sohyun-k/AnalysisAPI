@@ -1,22 +1,19 @@
 import { client } from "../connection";
 
-export default async (emotion, id, userId) => {
+export default async (emotion, id, count, userId) => {
   const updateContinuousTrend =
-    'UPDATE "User" SET "lastContinuousTrendEmotion" = $1, "lastContinuousTrendId" = $2 WHERE id = $3';
-  const values = [emotion, id, userId];
+    'UPDATE "User" SET "lastContinuousTrendEmotion" = $1, "lastContinuousTrendId" = $2, "lastContinuousTrendCount" = $3 WHERE id = $4';
+  const values = [emotion, id, count, userId];
 
-  await client.connect();
+  return new Promise((resolve, reject) => {
+    client.query(updateContinuousTrend, values, (err, result) => {
+      if (err) reject(err);
 
-  return await client
-    .query(updateContinuousTrend, values)
-    .then((result) => {
-      return true;
-    })
-    .catch((error) => {
-      console.error(error);
-      return false;
-    })
-    .finally(() => {
-      client.end();
+      if (result) {
+        resolve(true);
+      } else {
+        resolve(false);
+      }
     });
+  });
 };

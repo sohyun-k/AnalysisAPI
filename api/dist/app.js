@@ -38,22 +38,51 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 exports.lambdaHandler = void 0;
 var events_1 = require("./events");
+var deletedMory_1 = require("./events/deletedMory/deletedMory");
 var lambdaHandler = function (event, context, callback) { return __awaiter(void 0, void 0, void 0, function () {
     var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
+                context.callbackWaitsForEmptyEventLoop = false;
                 _a = event.field;
                 switch (_a) {
-                    case "createdMory": return [3 /*break*/, 1];
+                    case "getUserAnimalType": return [3 /*break*/, 1];
+                    case "createdMory": return [3 /*break*/, 3];
+                    case "deletedMory": return [3 /*break*/, 5];
+                    case "getRecentTrends": return [3 /*break*/, 7];
+                    case "listMonthlyMories": return [3 /*break*/, 9];
+                    case "listTrends": return [3 /*break*/, 11];
+                    case "getWeeklyReport": return [3 /*break*/, 12];
                 }
-                return [3 /*break*/, 3];
-            case 1: return [4 /*yield*/, (0, events_1.createdMory)(event, context, callback)];
+                return [3 /*break*/, 14];
+            case 1: return [4 /*yield*/, events_1.getUserAnimalType(event, context, callback)];
             case 2:
                 _b.sent();
-                return [3 /*break*/, 4];
-            case 3: return [3 /*break*/, 4];
-            case 4: return [2 /*return*/];
+                return [3 /*break*/, 15];
+            case 3: return [4 /*yield*/, events_1.createdMory(event, context, callback)];
+            case 4:
+                _b.sent();
+                return [3 /*break*/, 15];
+            case 5: return [4 /*yield*/, deletedMory_1.deletedMory(event, context, callback)];
+            case 6:
+                _b.sent();
+                return [3 /*break*/, 15];
+            case 7: return [4 /*yield*/, events_1.getRecentTrends(event, context, callback)];
+            case 8:
+                _b.sent();
+                return [3 /*break*/, 15];
+            case 9: return [4 /*yield*/, events_1.listMonthlyMories(event, context, callback)];
+            case 10:
+                _b.sent();
+                return [3 /*break*/, 15];
+            case 11: return [3 /*break*/, 15];
+            case 12: return [4 /*yield*/, events_1.getWeeklyReport(event, context, callback)];
+            case 13:
+                _b.sent();
+                return [3 /*break*/, 15];
+            case 14: return [3 /*break*/, 15];
+            case 15: return [2 /*return*/];
         }
     });
 }); };

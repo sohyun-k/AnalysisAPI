@@ -38,25 +38,35 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 exports.createdMory = void 0;
 var mory_1 = require("../../datasource/mory");
+var animalType_1 = require("./helper/animalType");
 var continuousTrend_1 = require("./helper/continuousTrend");
+var pastTrend_1 = require("./helper/pastTrend");
 var createdMory = function (event, context, callback) { return __awaiter(void 0, void 0, void 0, function () {
-    var args, location, mories;
+    var args;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 args = event.arguments;
-                location = JSON.parse(args.location);
                 // create mory
-                return [4 /*yield*/, (0, mory_1.createMory)(args.id, args.userId, args.emotion, location.coordinate[0], location.coordinate[1], args.text, args.createdAt)];
+                return [4 /*yield*/, mory_1.createMory(args.id, args.userId, args.emotion, args.latitude, args.longitude, args.text, args.createdAt)];
             case 1:
                 // create mory
                 _a.sent();
-                return [4 /*yield*/, (0, continuousTrend_1.calcContinuousTrend)(args.userId)];
+                // continous trend 계산
+                return [4 /*yield*/, continuousTrend_1.calcContinuousTrend(args.userId)];
             case 2:
-                mories = _a.sent();
-                console.log(mories);
+                // continous trend 계산
+                _a.sent();
                 // past trend 계산
+                return [4 /*yield*/, pastTrend_1.calcPastTrend(args.userId)];
+            case 3:
+                // past trend 계산
+                _a.sent();
                 // animal type 계산
+                return [4 /*yield*/, animalType_1.calcAnimalType(args.userId)];
+            case 4:
+                // animal type 계산
+                _a.sent();
                 return [2 /*return*/, true];
         }
     });

@@ -35,28 +35,27 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 exports.__esModule = true;
-exports.createdMory = void 0;
-var getRecentItems_1 = __importDefault(require("../datasource/mory/getRecentItems"));
-var createdMory = function (event, context, callback) { return __awaiter(void 0, void 0, void 0, function () {
-    var args, location, mories;
+var connection_1 = require("../connection");
+exports["default"] = (function (userId) { return __awaiter(void 0, void 0, void 0, function () {
+    var sql, values;
     return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                args = event.arguments;
-                location = JSON.parse(args.location);
-                return [4 /*yield*/, (0, getRecentItems_1["default"])(args.userId)];
-            case 1:
-                mories = _a.sent();
-                console.log(mories);
-                // past trend 계산
-                // animal type 계산
-                return [2 /*return*/, true];
-        }
+        sql = 'SELECT * FROM "Animal" WHERE "userId" = $1 ORDER BY "createdAt" DESC LIMIT 1';
+        values = [userId];
+        return [2 /*return*/, new Promise(function (resolve, reject) {
+                connection_1.client.query(sql, values, function (err, result) {
+                    if (err)
+                        reject(err);
+                    if (result.rows && result.rows.length > 0) {
+                        console.log("rows : ", result.rows);
+                        resolve(result.rows[0]);
+                    }
+                    else {
+                        console.log("no animal");
+                        resolve(undefined);
+                    }
+                });
+            })];
     });
-}); };
-exports.createdMory = createdMory;
-//# sourceMappingURL=createdMory.js.map
+}); });
+//# sourceMappingURL=getRecentItem.js.map
