@@ -57,7 +57,7 @@ exports["default"] = (function (userId, year, month) { return __awaiter(void 0, 
     });
 }); });
 var getDate = function (year, month) {
-    var start = moment_1["default"](year + "-" + month, "YYYY-MM");
+    var start = (0, moment_1["default"])(year + "-" + month, "YYYY-MM");
     return {
         startDate: start.format("YYYY-MM-DD").toString()
     };

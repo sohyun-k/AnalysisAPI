@@ -28,23 +28,14 @@ export default async (year, weekNumber, userId): Promise<MoryDateCount[]> => {
   });
 };
 
-const postProcessOfMoryDateCount = (
-  rows: MoryDateCount[],
-  year: number,
-  weekNumber: number
-) => {
+const postProcessOfMoryDateCount = (rows: MoryDateCount[], year: number, weekNumber: number) => {
   var i_r = 0;
   var result = [];
 
   for (let i = 0; i < 7; i++) {
-    const d = moment()
-      .year(year)
-      .isoWeek(weekNumber)
-      .day(i)
-      .format("YYYY-MM-DD")
-      .toString();
+    const d = moment().year(year).isoWeek(weekNumber).day(i).format("YYYY-MM-DD").toString();
 
-    if (moment(rows[i_r].date).format("YYYY-MM-DD").toString() === d) {
+    if (i_r < rows.length && moment(rows[i_r].date).format("YYYY-MM-DD").toString() === d) {
       result.push({ date: d, count: Number(rows[i_r].count) });
       i_r += 1;
     } else {

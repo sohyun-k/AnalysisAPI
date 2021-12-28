@@ -45,7 +45,7 @@ var getUserAnimalType = function (event, context, callback) { return __awaiter(v
         switch (_a.label) {
             case 0:
                 args = event.arguments;
-                return [4 /*yield*/, animal_1.getRecentAnimal(args.userId)];
+                return [4 /*yield*/, (0, animal_1.getRecentAnimal)(args.userId)];
             case 1:
                 animalType = _a.sent();
                 result = null;

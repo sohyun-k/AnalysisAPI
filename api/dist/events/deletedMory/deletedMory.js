@@ -46,28 +46,28 @@ var deletedMory = function (event, context, callback) { return __awaiter(void 0,
             case 0:
                 args = event.arguments;
                 // delete mory
-                return [4 /*yield*/, mory_1.deleteMory(args.id)];
+                return [4 /*yield*/, (0, mory_1.deleteMory)(args.id)];
             case 1:
                 // delete mory
                 _a.sent();
-                return [4 /*yield*/, user_1.getUser(args.userId)];
+                return [4 /*yield*/, (0, user_1.getUser)(args.userId)];
             case 2:
                 user = _a.sent();
                 if (!!user) return [3 /*break*/, 5];
-                return [4 /*yield*/, user_1.createUser(args.userId)];
+                return [4 /*yield*/, (0, user_1.createUser)(args.userId)];
             case 3:
                 _a.sent();
-                return [4 /*yield*/, user_1.getUser(args.userId)];
+                return [4 /*yield*/, (0, user_1.getUser)(args.userId)];
             case 4:
                 user = _a.sent();
                 _a.label = 5;
             case 5:
                 if (!(user.lastContinuousTrendCount <= 1)) return [3 /*break*/, 7];
-                return [4 /*yield*/, user_1.updateContinuousTrend(null, null, 0, args.userId)];
+                return [4 /*yield*/, (0, user_1.updateContinuousTrend)(null, null, 0, args.userId)];
             case 6:
                 _a.sent();
                 return [3 /*break*/, 9];
-            case 7: return [4 /*yield*/, user_1.updateContinuousTrend(user.lastContinuousTrendEmotion, null, user.lastContinuousTrendCount - 1, args.userId)];
+            case 7: return [4 /*yield*/, (0, user_1.updateContinuousTrend)(user.lastContinuousTrendEmotion, null, user.lastContinuousTrendCount - 1, args.userId)];
             case 8:
                 _a.sent();
                 _a.label = 9;

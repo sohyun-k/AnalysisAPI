@@ -79,7 +79,7 @@ var listMonthlyMories = function (event, context, callback) { return __awaiter(v
             case 4:
                 if (!(yearMonthList_1_1 = _b.sent(), !yearMonthList_1_1.done)) return [3 /*break*/, 8];
                 yearMonth = yearMonthList_1_1.value;
-                return [4 /*yield*/, mory_1.getMonthlyItems(args.userId, yearMonth.year, yearMonth.month)];
+                return [4 /*yield*/, (0, mory_1.getMonthlyItems)(args.userId, yearMonth.year, yearMonth.month)];
             case 5:
                 moryIds = _b.sent();
                 if (!(moryIds.length > 0)) return [3 /*break*/, 7];
@@ -122,9 +122,9 @@ var listMonthlyMories = function (event, context, callback) { return __awaiter(v
 }); };
 exports.listMonthlyMories = listMonthlyMories;
 var getStartYearMonth = function (nextToken) {
-    var yearMonth = moment_1["default"]();
+    var yearMonth = (0, moment_1["default"])();
     if (nextToken) {
-        var date = moment_1["default"](nextToken, "YYYY-MM");
+        var date = (0, moment_1["default"])(nextToken, "YYYY-MM");
         // nextToken 형식이 맞는지 체크
         if (!date.isValid()) {
             throw new Error("nextToken is not valid");
@@ -166,7 +166,7 @@ var checkNextToken = function (userId, yearMonthList) { return __awaiter(void 0,
         switch (_a.label) {
             case 0:
                 last = yearMonthList[yearMonthList.length - 1];
-                return [4 /*yield*/, mory_1.getNextItemOrderByCreatedAtDesc(userId, last.year, last.month)];
+                return [4 /*yield*/, (0, mory_1.getNextItemOrderByCreatedAtDesc)(userId, last.year, last.month)];
             case 1:
                 nextToken = _a.sent();
                 if (nextToken && nextToken.length > 0 && "nextToken" in nextToken[0]) {

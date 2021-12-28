@@ -1,8 +1,5 @@
+import { UserRanks } from "../../type";
 import { client } from "../connection";
-
-type UserRanks = {
-  [key: string]: number;
-};
 
 export default async (year, weekNumber): Promise<UserRanks> => {
   const sql = `SELECT "userId", RANK () OVER ( ORDER BY count(id) DESC ) FROM "Mory"

@@ -59,13 +59,8 @@ var postProcessOfMoryDateCount = function (rows, year, weekNumber) {
     var i_r = 0;
     var result = [];
     for (var i = 0; i < 7; i++) {
-        var d = moment_1["default"]()
-            .year(year)
-            .isoWeek(weekNumber)
-            .day(i)
-            .format("YYYY-MM-DD")
-            .toString();
-        if (moment_1["default"](rows[i_r].date).format("YYYY-MM-DD").toString() === d) {
+        var d = (0, moment_1["default"])().year(year).isoWeek(weekNumber).day(i).format("YYYY-MM-DD").toString();
+        if (i_r < rows.length && (0, moment_1["default"])(rows[i_r].date).format("YYYY-MM-DD").toString() === d) {
             result.push({ date: d, count: Number(rows[i_r].count) });
             i_r += 1;
         }

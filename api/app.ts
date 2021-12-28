@@ -1,10 +1,4 @@
-import {
-  createdMory,
-  getRecentTrends,
-  getUserAnimalType,
-  getWeeklyReport,
-  listMonthlyMories,
-} from "./events";
+import { createdMory, getRecentReportNotSeenYet, getRecentTrends, getUserAnimalType, getWeeklyReport, listMonthlyMories } from "./events";
 import { deletedMory } from "./events/deletedMory/deletedMory";
 
 type Event = {
@@ -16,6 +10,7 @@ type Event = {
     | "listMonthlyMories"
     | "getWeeklyReport"
     | "getMonthlyReport"
+    | "getRecentReportNotSeenYet"
     | "getRecentTrends";
   arguments: any;
 };
@@ -42,6 +37,9 @@ export const lambdaHandler = async (event: Event, context, callback) => {
       break;
     case "getWeeklyReport":
       await getWeeklyReport(event, context, callback);
+      break;
+    case "getRecentReportNotSeenYet":
+      await getRecentReportNotSeenYet(event, context, callback);
       break;
     default:
       break;

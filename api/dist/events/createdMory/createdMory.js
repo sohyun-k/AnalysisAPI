@@ -48,22 +48,22 @@ var createdMory = function (event, context, callback) { return __awaiter(void 0,
             case 0:
                 args = event.arguments;
                 // create mory
-                return [4 /*yield*/, mory_1.createMory(args.id, args.userId, args.emotion, args.latitude, args.longitude, args.text, args.createdAt)];
+                return [4 /*yield*/, (0, mory_1.createMory)(args.id, args.userId, args.emotion, args.latitude, args.longitude, args.text, args.createdAt)];
             case 1:
                 // create mory
                 _a.sent();
                 // continous trend 계산
-                return [4 /*yield*/, continuousTrend_1.calcContinuousTrend(args.userId)];
+                return [4 /*yield*/, (0, continuousTrend_1.calcContinuousTrend)(args.userId)];
             case 2:
                 // continous trend 계산
                 _a.sent();
                 // past trend 계산
-                return [4 /*yield*/, pastTrend_1.calcPastTrend(args.userId)];
+                return [4 /*yield*/, (0, pastTrend_1.calcPastTrend)(args.userId)];
             case 3:
                 // past trend 계산
                 _a.sent();
                 // animal type 계산
-                return [4 /*yield*/, animalType_1.calcAnimalType(args.userId)];
+                return [4 /*yield*/, (0, animalType_1.calcAnimalType)(args.userId)];
             case 4:
                 // animal type 계산
                 _a.sent();

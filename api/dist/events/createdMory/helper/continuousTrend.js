@@ -45,29 +45,29 @@ var calcContinuousTrend = function (userId) { return __awaiter(void 0, void 0, v
     var user, mories, lastEmotion, newTrendId;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, user_1.getUser(userId)];
+            case 0: return [4 /*yield*/, (0, user_1.getUser)(userId)];
             case 1:
                 user = _a.sent();
                 if (!!user) return [3 /*break*/, 4];
-                return [4 /*yield*/, user_1.createUser(userId)];
+                return [4 /*yield*/, (0, user_1.createUser)(userId)];
             case 2:
                 _a.sent();
-                return [4 /*yield*/, user_1.getUser(userId)];
+                return [4 /*yield*/, (0, user_1.getUser)(userId)];
             case 3:
                 user = _a.sent();
                 _a.label = 4;
-            case 4: return [4 /*yield*/, mory_1.getRecentItems(userId)];
+            case 4: return [4 /*yield*/, (0, mory_1.getRecentItems)(userId)];
             case 5:
                 mories = _a.sent();
                 lastEmotion = mories[0].emotion;
                 if (!(mories.length !== 3)) return [3 /*break*/, 9];
                 if (!(mories.length === 2)) return [3 /*break*/, 7];
                 if (!(user.lastContinuousTrendEmotion === lastEmotion)) return [3 /*break*/, 7];
-                return [4 /*yield*/, user_1.updateContinuousTrend(lastEmotion, null, user.lastContinuousTrendCount + 1, userId)];
+                return [4 /*yield*/, (0, user_1.updateContinuousTrend)(lastEmotion, null, user.lastContinuousTrendCount + 1, userId)];
             case 6:
                 _a.sent();
                 return [2 /*return*/];
-            case 7: return [4 /*yield*/, user_1.updateContinuousTrend(lastEmotion, null, 1, userId)];
+            case 7: return [4 /*yield*/, (0, user_1.updateContinuousTrend)(lastEmotion, null, 1, userId)];
             case 8:
                 _a.sent();
                 return [2 /*return*/];
@@ -75,19 +75,19 @@ var calcContinuousTrend = function (userId) { return __awaiter(void 0, void 0, v
                 if (!(user.lastContinuousTrendEmotion &&
                     user.lastContinuousTrendEmotion === lastEmotion)) return [3 /*break*/, 15];
                 if (!(user.lastContinuousTrendCount === 2)) return [3 /*break*/, 12];
-                return [4 /*yield*/, trend_1.createTrend(userId, "continuous", lastEmotion, new Date(), mories.map(function (v) { return v.id; }))];
+                return [4 /*yield*/, (0, trend_1.createTrend)(userId, "continuous", lastEmotion, new Date(), mories.map(function (v) { return v.id; }))];
             case 10:
                 newTrendId = _a.sent();
-                notification_1.pushContinuousTrend(userId, newTrendId, lastEmotion, new Date(), mories.map(function (v) { return v.id; }));
+                (0, notification_1.pushContinuousTrend)(userId, newTrendId, lastEmotion, new Date(), mories.map(function (v) { return v.id; }));
                 // update
-                return [4 /*yield*/, user_1.updateContinuousTrend(null, newTrendId, 0, userId)];
+                return [4 /*yield*/, (0, user_1.updateContinuousTrend)(null, newTrendId, 0, userId)];
             case 11:
                 // update
                 _a.sent();
                 return [3 /*break*/, 14];
             case 12: 
             // update
-            return [4 /*yield*/, user_1.updateContinuousTrend(lastEmotion, null, user.lastContinuousTrendCount + 1, userId)];
+            return [4 /*yield*/, (0, user_1.updateContinuousTrend)(lastEmotion, null, user.lastContinuousTrendCount + 1, userId)];
             case 13:
                 // update
                 _a.sent();
@@ -95,7 +95,7 @@ var calcContinuousTrend = function (userId) { return __awaiter(void 0, void 0, v
             case 14: return [3 /*break*/, 17];
             case 15: 
             // emotion 이 다른 경우
-            return [4 /*yield*/, user_1.updateContinuousTrend(lastEmotion, null, 1, userId)];
+            return [4 /*yield*/, (0, user_1.updateContinuousTrend)(lastEmotion, null, 1, userId)];
             case 16:
                 // emotion 이 다른 경우
                 _a.sent();

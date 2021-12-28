@@ -40,13 +40,13 @@ var connection_1 = require("../connection");
 exports["default"] = (function (year, weekNumber, userId) { return __awaiter(void 0, void 0, void 0, function () {
     var sql, values;
     return __generator(this, function (_a) {
-        sql = "SELECT emotion, count(id) AS count FROM \"Mory\"\n\t\t\t\t\t\t\tWHERE \n\t\t\t\t\t\t\t\textract('year' from \"createdAt\") = $1 \n\t\t\t\t\t\t\tAND\n\t\t\t\t\t\t\t\tCASE \n\t\t\t\t\t\t\t\t  WHEN extract(ISODOW FROM \"createdAt\" AT TIME ZONE 'utc' AT TIME ZONE 'Asia/Seoul') < 7 \n\t\t\t\t\t\t\t\t  THEN extract('week' from \"createdAt\" AT TIME ZONE 'utc' AT TIME ZONE 'Asia/Seoul')\n\t\t\t\t\t\t\t\t  ELSE extract('week' from \"createdAt\" AT TIME ZONE 'utc' AT TIME ZONE 'Asia/Seoul' + INTERVAL '1 day')\n\t\t\t\t\t\t\t\tEND = $2\n              AND\n                \"userId\" = $3\n\t\t\t\t\t\t\tGROUP BY emotion;";
+        sql = "SELECT emotion, count(id) AS num FROM \"Mory\"\n\t\t\t\t\t\t\tWHERE \n\t\t\t\t\t\t\t\textract('year' from \"createdAt\") = $1 \n\t\t\t\t\t\t\tAND\n\t\t\t\t\t\t\t\tCASE \n\t\t\t\t\t\t\t\t  WHEN extract(ISODOW FROM \"createdAt\" AT TIME ZONE 'utc' AT TIME ZONE 'Asia/Seoul') < 7 \n\t\t\t\t\t\t\t\t  THEN extract('week' from \"createdAt\" AT TIME ZONE 'utc' AT TIME ZONE 'Asia/Seoul')\n\t\t\t\t\t\t\t\t  ELSE extract('week' from \"createdAt\" AT TIME ZONE 'utc' AT TIME ZONE 'Asia/Seoul' + INTERVAL '1 day')\n\t\t\t\t\t\t\t\tEND = $2\n              AND\n                \"userId\" = $3\n\t\t\t\t\t\t\tGROUP BY emotion;";
         values = [year, weekNumber, userId];
         return [2 /*return*/, new Promise(function (resolve, reject) {
                 connection_1.client.query(sql, values, function (err, result) {
                     if (err)
                         reject(err);
-                    resolve(result.rows);
+                    resolve(result.rows.map(function (v) { return ({ emotion: v.emotion, num: Number(v.num) }); }));
                 });
             })];
     });

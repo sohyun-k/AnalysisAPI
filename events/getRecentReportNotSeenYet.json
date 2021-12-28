@@ -1,8 +1,6 @@
 {
-  "field": "getWeeklyReport",
+  "field": "getRecentReportNotSeenYet",
   "arguments": {
-    "year": 2021,
-    "weekNumber": 52,
     "userId": "UWeGwb8aC2WgBNyRoC3v0N3IHy73"
   }
 }

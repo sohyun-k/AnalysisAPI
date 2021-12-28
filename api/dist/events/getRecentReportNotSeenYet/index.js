@@ -39,29 +39,27 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 exports.__esModule = true;
-var moment_1 = __importDefault(require("moment"));
-var connection_1 = require("../connection");
-exports["default"] = (function (userId, year, month) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, startDate, endDate, sql, values;
-    return __generator(this, function (_b) {
-        _a = getDateRange(year, month), startDate = _a.startDate, endDate = _a.endDate;
-        sql = "SELECT id, \"userId\" FROM \"Mory\"  \n\t\tWHERE \"userId\" = $1     AND \"createdAt\" AT TIME ZONE 'utc' AT TIME ZONE 'Asia/Seoul' >= $2     AND \"createdAt\" AT TIME ZONE 'utc' AT TIME ZONE 'Asia/Seoul' < $3   \n\t\tORDER BY \"createdAt\" DESC";
-        values = [userId, startDate, endDate];
-        return [2 /*return*/, new Promise(function (resolve, reject) {
-                connection_1.client.query(sql, values, function (err, result) {
-                    if (err)
-                        reject(err);
-                    resolve(result.rows);
-                });
-            })];
+exports.getRecentReportNotSeenYet = void 0;
+var moment_timezone_1 = __importDefault(require("moment-timezone"));
+var getWeeklyReport_1 = require("../getWeeklyReport");
+var getRecentReportNotSeenYet = function (event, context, callback) { return __awaiter(void 0, void 0, void 0, function () {
+    var args, year, weekNumber, weeklyReport;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                args = event.arguments;
+                year = (0, moment_timezone_1["default"])().tz("Asia/Seoul").year();
+                weekNumber = (0, moment_timezone_1["default"])().tz("Asia/Seoul").isoWeek();
+                if ((0, moment_timezone_1["default"])().tz("Asia/Seoul").day() === 0) {
+                    weekNumber = (0, moment_timezone_1["default"])().tz("Asia/Seoul").add(1, "day").isoWeek();
+                }
+                return [4 /*yield*/, (0, getWeeklyReport_1._getWeeklyReport)({ userId: args.userId, year: year, weekNumber: weekNumber })];
+            case 1:
+                weeklyReport = _a.sent();
+                callback(null, { weeklyReport: weeklyReport, monthlyReport: null });
+                return [2 /*return*/];
+        }
     });
-}); });
-var getDateRange = function (year, month) {
-    var start = (0, moment_1["default"])(year + "-" + month, "YYYY-MM");
-    var end = start.clone().add(1, "month");
-    return {
-        startDate: start.format("YYYY-MM-DD").toString(),
-        endDate: end.format("YYYY-MM-DD").toString()
-    };
-};
-//# sourceMappingURL=getMonthlyItems.js.map
+}); };
+exports.getRecentReportNotSeenYet = getRecentReportNotSeenYet;
+//# sourceMappingURL=index.js.map

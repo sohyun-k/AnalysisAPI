@@ -52,17 +52,17 @@ var calcPastTrend = function (userId) { return __awaiter(void 0, void 0, void 0,
                             moryIdsGroupByEmotion[emotion].includes(lastPastTrendEmotionIds[emotion])) {
                             return [2 /*return*/];
                         }
-                        return [4 /*yield*/, trend_1.createTrend(userId, "past", emotion, new Date(), moryIdsGroupByEmotion[emotion].map(function (id) { return id; }))];
+                        return [4 /*yield*/, (0, trend_1.createTrend)(userId, "past", emotion, new Date(), moryIdsGroupByEmotion[emotion].map(function (id) { return id; }))];
                     case 1:
                         newTrendId = _a.sent();
                         lastPastTrendEmotionIds[emotion] = moryIdsGroupByEmotion[emotion][0];
                         // update
-                        return [4 /*yield*/, user_1.updatePastTrend(JSON.stringify(lastPastTrendEmotionIds), userId)];
+                        return [4 /*yield*/, (0, user_1.updatePastTrend)(JSON.stringify(lastPastTrendEmotionIds), userId)];
                     case 2:
                         // update
                         _a.sent();
                         //TODO: notification
-                        notification_1.pushPastTrend(userId, newTrendId, emotion, new Date(), moryIdsGroupByEmotion[emotion].map(function (id) { return id; }));
+                        (0, notification_1.pushPastTrend)(userId, newTrendId, emotion, new Date(), moryIdsGroupByEmotion[emotion].map(function (id) { return id; }));
                         return [2 /*return*/];
                 }
             });
@@ -71,14 +71,14 @@ var calcPastTrend = function (userId) { return __awaiter(void 0, void 0, void 0,
     var user, lastPastTrendEmotionIds, mories, moryIdsGroupByEmotion, pastTrendFuncs;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, user_1.getUser(userId)];
+            case 0: return [4 /*yield*/, (0, user_1.getUser)(userId)];
             case 1:
                 user = _a.sent();
                 if (!!user) return [3 /*break*/, 4];
-                return [4 /*yield*/, user_1.createUser(userId)];
+                return [4 /*yield*/, (0, user_1.createUser)(userId)];
             case 2:
                 _a.sent();
-                return [4 /*yield*/, user_1.getUser(userId)];
+                return [4 /*yield*/, (0, user_1.getUser)(userId)];
             case 3:
                 user = _a.sent();
                 _a.label = 4;
@@ -87,7 +87,7 @@ var calcPastTrend = function (userId) { return __awaiter(void 0, void 0, void 0,
                 if (user.lastPastTrendEmotionIds) {
                     lastPastTrendEmotionIds = user.lastPastTrendEmotionIds;
                 }
-                return [4 /*yield*/, mory_1.getItemsInTwoWeeks(userId)];
+                return [4 /*yield*/, (0, mory_1.getItemsInTwoWeeks)(userId)];
             case 5:
                 mories = _a.sent();
                 moryIdsGroupByEmotion = {};

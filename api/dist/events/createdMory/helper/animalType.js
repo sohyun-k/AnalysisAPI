@@ -62,13 +62,13 @@ var calcAnimalType = function (userId) { return __awaiter(void 0, void 0, void 0
     var animal, emotionCounts, total, selectedEmotions, animalType;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, animal_1.getRecentAnimal(userId)];
+            case 0: return [4 /*yield*/, (0, animal_1.getRecentAnimal)(userId)];
             case 1:
                 animal = _a.sent();
                 console.log(animal);
                 if (!(!animal ||
-                    (animal && moment_1["default"]().diff(moment_1["default"](animal.createdAt).toDate(), "days") > 7))) return [3 /*break*/, 4];
-                return [4 /*yield*/, mory_1.getEmotionCountsInMonth(userId)];
+                    (animal && (0, moment_1["default"])().diff((0, moment_1["default"])(animal.createdAt).toDate(), "days") > 7))) return [3 /*break*/, 4];
+                return [4 /*yield*/, (0, mory_1.getEmotionCountsInMonth)(userId)];
             case 2:
                 emotionCounts = _a.sent();
                 console.log(emotionCounts);
@@ -85,17 +85,17 @@ var calcAnimalType = function (userId) { return __awaiter(void 0, void 0, void 0
                         10) {
                     selectedEmotions.push(emotionCounts[1].emotion);
                 }
-                animalType = animals_1.getAnimalType(selectedEmotions);
+                animalType = (0, animals_1.getAnimalType)(selectedEmotions);
                 console.log(animalType);
                 // create animal
                 if (animal && animal.animal === animalType.animal) {
                     return [2 /*return*/];
                 }
-                return [4 /*yield*/, animal_1.createAnimal(userId, animalType.animal, animalType.key, selectedEmotions[0], selectedEmotions.length > 1 ? selectedEmotions[1] : "")];
+                return [4 /*yield*/, (0, animal_1.createAnimal)(userId, animalType.animal, animalType.key, selectedEmotions[0], selectedEmotions.length > 1 ? selectedEmotions[1] : "")];
             case 3:
                 _a.sent();
                 //TODO: notification
-                notification_1.pushAnimalType(userId, animalType.key);
+                (0, notification_1.pushAnimalType)(userId, animalType.key);
                 _a.label = 4;
             case 4: return [2 /*return*/];
         }

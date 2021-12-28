@@ -8,94 +8,26 @@ import {
   getUserMoryCountsGroupByDateInWeek,
   getUserMorysInWeek,
 } from "../../datasource/mory";
-import { Emotion } from "../../type";
+import {
+  ChangeResult,
+  Emotion,
+  EmotionChange,
+  EmotionCount,
+  GeoClusterAnalysis,
+  GridHeatmapSources,
+  Mory,
+  MoryDateCount,
+  UserClusterAnalysis,
+  UserRanks,
+  UserSentimentAnalysis,
+  WeeklyReport,
+  WeeklyStatistic,
+} from "../../type";
+import AWS from "aws-sdk";
+import { MoryId } from "../../type";
 
-enum Gender {
-  male,
-  female,
-}
-
-type EmotionCount = {
-  emotion: string;
-  count: number;
-};
-
-type ChangeResult = {
-  current: number;
-  previous: number;
-  text: string;
-};
-
-type ClusterComparisonResult = {
-  sample: number;
-  population: number;
-  text: string;
-};
-
-type SentimentGroupChange = {
-  positive: ChangeResult;
-  negative: ChangeResult;
-  neutral: ChangeResult;
-};
-
-type EmotionChange = {
-  emotion: string;
-  chnage: ChangeResult;
-};
-
-type UserSentimentAnalysis = {
-  sentimentGroupChange: SentimentGroupChange;
-  theBiggestEmotionChange: [EmotionChange];
-};
-
-type UserClusterAnalysis = {
-  hasUserCluster: Boolean;
-  userBirthYear: number;
-  userAge: number;
-  userGender: Gender;
-  positive: ClusterComparisonResult;
-  negatvie: ClusterComparisonResult;
-  neutral: ClusterComparisonResult;
-};
-
-type EmotionGeoPonumber = {
-  emotion: Emotion;
-  latitude: number;
-  longitude: number;
-};
-
-type GeoClusterCenter = {
-  name: string;
-  address: string;
-  latitude: number;
-  longitude: number;
-};
-
-type GeoClusterAnalysis = {
-  geoHeatmapSources: [EmotionGeoPonumber];
-  geoClusterCenters: [GeoClusterCenter];
-};
-
-type WeeklyStatistic = {
-  // 해당 week에 작성한 mory의 전체 개수
-  totalCount: number;
-  // 해당 week에 작성한 mory의 감정별 개수
-  thisWeekEmotionCount: EmotionCount[];
-  // 이전 week에 작성한 mory의 감정별 개수
-  previousWeekEmotionCount: EmotionCount[];
-  // 해당 week의 순위 (%)
-  rankPercent: number;
-  // weekly의 경우 숫자가 담긴 7개의 배열
-  gridHeatmapSources: number[];
-};
-
-type WeeklyReport = {
-  weeklyStatistic: WeeklyStatistic;
-  userSentimentAnalysis: UserSentimentAnalysis;
-  userClusterAnalysis: UserClusterAnalysis;
-  geoClusterAnalysis: GeoClusterAnalysis;
-  mories: any;
-};
+AWS.config.update({ region: "ap-northeast-2" });
+const dbclient = new AWS.DynamoDB();
 
 type Arguments = {
   userId: string;
@@ -105,82 +37,312 @@ type Arguments = {
 
 export const getWeeklyReport = async (event, context, callback) => {
   var args = event.arguments as Arguments;
+
+  const result = await _getWeeklyReport(args);
+
+  callback(null, result);
+};
+
+export const _getWeeklyReport = async (args: Arguments): Promise<WeeklyReport> => {
   var result: WeeklyReport;
 
-  const year = 2021;
-  const weekNumber = 47;
-  const userId = "UWeGwb8aC2WgBNyRoC3v0N3IHy73";
+  const year = args.year;
+  const weekNumber = args.weekNumber;
+  const userId = args.userId;
 
+  const { weeklyStartDate, weeklyEndDate, month } = getThisWeekInfo(year, weekNumber);
+  const { emotionCounts, userCounts, userRanks, moryCounts } = await getTotalWeeklyData(year, weekNumber);
+  const { previousWeekEmotionCount, thisWeekEmotionCount, userMories, createdDates } = await getUserWeeklyData(year, weekNumber, userId);
+
+  if (previousWeekEmotionCount.length === 0 && thisWeekEmotionCount.length === 0) {
+    return result;
+  }
+
+  // 사용자 클러스터링 계산
+  result = {
+    year,
+    month,
+    weekNumber,
+    weeklyStartDate,
+    weeklyEndDate,
+    weeklyStatistic: await getWeeklyStatistic(thisWeekEmotionCount, previousWeekEmotionCount, createdDates, userCounts, userRanks, userId),
+    userSentimentAnalysis: getUserSentimentAnalysis(previousWeekEmotionCount, thisWeekEmotionCount),
+    userClusterAnalysis: getUserClusterAnalysis(),
+    geoClusterAnalysis: getGeoClusterAnalysis(userMories),
+    mories: await getMories(userMories.map((v) => ({ id: v.id, userId: v.userId }))),
+  };
+
+  return result;
+};
+
+const getThisWeekInfo = (year: number, weekNumber: number) => {
+  const month = getMonthFromWeekNumber(year, weekNumber);
+  const weeklyStartDate = getWeeklyStartDate(year, weekNumber);
+  const weeklyEndDate = getWeeklyEndDate(year, weekNumber);
+
+  return { month, weeklyStartDate, weeklyEndDate };
+};
+
+const getTotalWeeklyData = async (year: number, weekNumber: number) => {
   // 1주 감정별 개수 조회
   const emotionCounts = await getAllEmotionCountsInWeek(year, weekNumber);
 
   // 1주 사용자 수 조회
   const userCounts = await getAllUserCountsInWeek(year, weekNumber);
-  console.log(userCounts);
 
   // 1주 전체 mory 개수 조회
   const moryCounts = await getAllMoryCountsInWeek(year, weekNumber);
-  console.log(moryCounts);
 
   // 1주 전체 user rank objects
   const userRanks = await getAllUserRanksInWeek(year, weekNumber);
-  console.log(userRanks);
 
-  // Loop 시작
-  // 현재는 Test 계정만 사용
+  return {
+    emotionCounts,
+    userCounts,
+    moryCounts,
+    userRanks,
+  };
+};
 
-  // 이번주 사용자 감정별 개수 조회
-  const userEmotionCounts = await getUserEmotionCountsInWeek(
-    year,
-    weekNumber,
-    userId
-  );
+const getUserWeeklyData = async (year: number, weekNumber: number, userId: string) => {
+  const { previousWeekYear, previousWeekNumber } = getPreviousWeekNumber(year, weekNumber);
 
-  // 지난주 사용자 감정별 개수 조회
-  const previousWeekNumber = moment()
-    .year(year)
-    .isoWeek(weekNumber)
-    .subtract(7, "d")
-    .isoWeek();
-  const previousWeekYear = moment()
-    .year(year)
-    .isoWeek(weekNumber)
-    .subtract(7, "d")
-    .year();
+  const thisWeekEmotionCount = await getUserEmotionCountsInWeek(year, weekNumber, userId);
 
-  const previousUserEmotionCounts = await getUserEmotionCountsInWeek(
-    previousWeekYear,
-    previousWeekNumber,
-    userId
-  );
+  const previousWeekEmotionCount = await getUserEmotionCountsInWeek(previousWeekYear, previousWeekNumber, userId);
 
-  // 감정 개수 RANK Percentage
-  const rankPercentage = (userRanks[userId] / userCounts) * 100;
-  console.log(rankPercentage);
+  const createdDates = await getUserMoryCountsGroupByDateInWeek(year, weekNumber, userId);
 
-  // 기록한 날 계산
-  const createdDates = await getUserMoryCountsGroupByDateInWeek(
-    year,
-    weekNumber,
-    userId
-  );
-  console.log(createdDates.forEach((v) => console.log(v)));
-
-  // 감정 위치 클러스터링 계산
   const userMories = await getUserMorysInWeek(year, weekNumber, userId);
-  userMories.forEach((v) => console.log(v.latitude, v.longitude));
 
-  // 사용자 클러스터링 계산
+  return {
+    previousWeekEmotionCount,
+    thisWeekEmotionCount,
+    createdDates,
+    userMories,
+  };
+};
 
-  result = {
-    weeklyStatistic: {
-      totalCount: userMories.length,
-      thisWeekEmotionCount: userEmotionCounts,
-      previousWeekEmotionCount: previousUserEmotionCounts,
-      rankPercent: rankPercentage,
-      gridHeatmapSources: createdDates.map((v) => v.count),
-    },
+const getWeeklyStatistic = async (
+  thisWeekEmotionCount: EmotionCount[],
+  previousWeekEmotionCount: EmotionCount[],
+  createdDates: MoryDateCount[],
+  userCounts: number,
+  userRanks: UserRanks,
+  userId: string
+): Promise<WeeklyStatistic> => {
+  const rankPercentage = userId in userRanks ? (userRanks[userId] / userCounts) * 100 : 100.0;
+
+  const getGridHeatmapSources = (): GridHeatmapSources => {
+    const total = createdDates.length;
+    const days = createdDates.reduce((acc, cur) => (cur.count > 0 ? acc + 1 : acc), 0);
+
+    return {
+      text: `${total}일 중 ${days}일 (${Math.round((days / total) * 100)}%)`,
+      data: createdDates.map((v) => v.count),
+    };
   };
 
-  callback(null, result);
+  return {
+    totalCount: thisWeekEmotionCount.reduce((acc, cur) => acc + cur.num, 0),
+    thisWeekEmotionCount,
+    previousWeekEmotionCount,
+    rankPercent: rankPercentage,
+    gridHeatmapSources: getGridHeatmapSources(),
+  };
 };
+
+const getUserSentimentAnalysis = (previousWeekEmotionCount: EmotionCount[], thisWeekEmotionCount: EmotionCount[]): UserSentimentAnalysis => {
+  const previousWeek = setimentCountReducer(previousWeekEmotionCount);
+  const thisWeek = setimentCountReducer(thisWeekEmotionCount);
+
+  const getSentimentGroupChange = (group: "positive" | "negative" | "neutral"): ChangeResult => {
+    const pre = previousWeek[group];
+    const cur = thisWeek[group];
+    var text = "";
+
+    if (pre > 0 && cur > 0) {
+      const rateOfChange = Math.round(((cur - pre) / pre) * 100);
+      text = `${rateOfChange}%`;
+    } else if (pre > 0 && cur === 0) {
+      text = "";
+    } else if (pre === 0 && cur > 0) {
+      text = "";
+    } else {
+      text = "";
+    }
+
+    return {
+      previous: previousWeek[group],
+      current: thisWeek[group],
+      text,
+    };
+  };
+
+  const getBiggestEmotionChange = (): EmotionChange[] => {
+    const emotionChanges = compareEmotionChange(thisWeekEmotionCount, previousWeekEmotionCount);
+    const biggestEmotionEntry = Object.entries(emotionChanges).sort(([, a], [, b]) => Math.abs(b.diff) - Math.abs(a.diff))[0];
+
+    if (biggestEmotionEntry[1].diff === 0) return [];
+
+    return [
+      {
+        emotion: biggestEmotionEntry[0],
+        change: {
+          current: biggestEmotionEntry[1].value1,
+          previous: biggestEmotionEntry[1].value2,
+          text:
+            biggestEmotionEntry[1].value2 !== 0
+              ? `${Math.round((biggestEmotionEntry[1].value1 - biggestEmotionEntry[1].value2) / biggestEmotionEntry[1].value2) * 100}% ${
+                  biggestEmotionEntry[1].diff > 0 ? "증가" : "감소"
+                }`
+              : "",
+        },
+      },
+    ];
+  };
+
+  return {
+    sentimentGroupChange: {
+      positive: getSentimentGroupChange("positive"),
+      neutral: getSentimentGroupChange("neutral"),
+      negative: getSentimentGroupChange("negative"),
+    },
+    theBiggestEmotionChange: getBiggestEmotionChange(),
+  };
+};
+
+const getUserClusterAnalysis = (): UserClusterAnalysis => {
+  return {
+    hasUserCluster: false,
+    userAge: null,
+    userBirthYear: null,
+    userGender: null,
+    negatvie: null,
+    positive: null,
+    neutral: null,
+  };
+};
+
+const getGeoClusterAnalysis = (userMories: Mory[]): GeoClusterAnalysis => {
+  return {
+    // TEST
+    geoClusterCenters: [{ address: "서울시 영등포구 여의도동", latitude: 36.5, longitude: 126.8 }],
+    geoHeatmapSources: userMories.map((v) => ({ emotion: Emotion[v.emotion], latitude: v.latitude, longitude: v.longitude })),
+  };
+};
+
+const getMories = async (moryIds: MoryId[]) => {
+  if (moryIds.length === 0) {
+    return [];
+  }
+
+  const data = await dbclient.batchGetItem(moryIdsBatchParams(moryIds)).promise();
+
+  return data.Responses["mory"].map((v) => AWS.DynamoDB.Converter.unmarshall(v));
+};
+
+const getPreviousWeekNumber = (year: number, weekNumber: number) => {
+  const previousWeekNumber = moment().year(year).isoWeek(weekNumber).subtract(7, "d").isoWeek();
+  const previousWeekYear = moment().year(year).isoWeek(weekNumber).subtract(7, "d").year();
+
+  return { previousWeekNumber, previousWeekYear };
+};
+
+const getWeeklyStartDate = (year: number, weekNumber: number) => {
+  return moment().year(year).isoWeek(weekNumber).day(0).toDate();
+};
+
+const getWeeklyEndDate = (year: number, weekNumber: number) => {
+  return moment().year(year).isoWeek(weekNumber).day(6).toDate();
+};
+
+const getMonthFromWeekNumber = (year: number, weekNumber: number) => {
+  return moment().year(year).isoWeek(weekNumber).month() + 1;
+};
+
+type SentimentCount = {
+  positive: number;
+  negative: number;
+  neutral: number;
+};
+
+const setimentCountReducer = (emotionCounts: EmotionCount[]) =>
+  emotionCounts.reduce(
+    (acc: SentimentCount, cur) => {
+      switch (cur.emotion) {
+        case Emotion.love:
+        case Emotion.happy:
+        case Emotion.fun:
+        case Emotion.excited:
+        case Emotion.proud:
+          return { ...acc, positive: acc.positive + cur.num };
+        case Emotion.angry:
+        case Emotion.annoyed:
+        case Emotion.gloomy:
+        case Emotion.jealous:
+        case Emotion.nervous:
+        case Emotion.regret:
+        case Emotion.sad:
+        case Emotion.scared:
+          return { ...acc, negative: acc.negative + cur.num };
+        case Emotion.lethargic:
+        case Emotion.calm:
+        case Emotion.surprised:
+          return { ...acc, neutral: acc.neutral + cur.num };
+        default:
+          console.log("Error");
+          return acc;
+      }
+    },
+    { positive: 0, negative: 0, neutral: 0 }
+  );
+
+type EK = {
+  [key in Emotion]: {
+    value1: number;
+    value2: number;
+    diff: number;
+  };
+};
+
+/**
+ * 2개 감정배열의 개수 비교. emotion1을 기준으로.
+ * @param emotions1
+ * @param emotions2
+ * @returns emotions1 - emotions2
+ */
+const compareEmotionChange = (emotions1: EmotionCount[], emotions2: EmotionCount[]): EK => {
+  const emotions1_keyObjects = Object.keys(Emotion).reduce((acc, cur) => ({ ...acc, [cur]: 0 }), {});
+  const emotions2_keyObjects = Object.keys(Emotion).reduce((acc, cur) => ({ ...acc, [cur]: 0 }), {});
+
+  emotions1.forEach((v) => (emotions1_keyObjects[v.emotion] = v.num));
+  emotions2.forEach((v) => (emotions2_keyObjects[v.emotion] = v.num));
+
+  return Object.keys(Emotion).reduce(
+    (acc, cur) => ({
+      ...acc,
+      [cur]: {
+        value1: emotions1_keyObjects[cur],
+        value2: emotions2_keyObjects[cur],
+        diff: emotions1_keyObjects[cur] - emotions2_keyObjects[cur],
+      },
+    }),
+    {} as EK
+  );
+};
+
+const moryIdsBatchParams = (moryIds: MoryId[]) => ({
+  RequestItems: {
+    mory: {
+      Keys: moryIds.map((v) => ({
+        id: {
+          S: v.id,
+        },
+        userId: {
+          S: v.userId,
+        },
+      })),
+    },
+  },
+});

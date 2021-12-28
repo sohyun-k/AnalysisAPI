@@ -9,13 +9,14 @@
   "dependencies": {
     "axios": "^0.21.1",
     "moment": "^2.29.1",
+    "moment-timezone": "^0.5.34",
     "pg": "^8.7.1",
     "request": "^2.88.2"
   },
   "scripts": {
     "build": "tsc && cd .. && sam build && cd api",
     "deploy": "cd .. && sam deploy && cd api",
-    "invoke": "tsc && cd .. && sam local invoke",
+    "invoke": "tsc && cd .. && sam build && sam local invoke",
     "test": "mocha tests/unit/"
   },
   "devDependencies": {

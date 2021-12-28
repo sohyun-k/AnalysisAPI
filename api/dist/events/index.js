@@ -7,7 +7,7 @@ var __createBinding = (this && this.__createBinding) || (Object.create ? (functi
     o[k2] = m[k];
 }));
 exports.__esModule = true;
-exports.getWeeklyReport = exports.listMonthlyMories = exports.getUserAnimalType = exports.getRecentTrends = exports.createdMory = void 0;
+exports.getRecentReportNotSeenYet = exports.getWeeklyReport = exports.listMonthlyMories = exports.getUserAnimalType = exports.getRecentTrends = exports.createdMory = void 0;
 var createdMory_1 = require("./createdMory/createdMory");
 __createBinding(exports, createdMory_1, "createdMory");
 var getRecentTrends_1 = require("./getRecentTrends");
@@ -18,4 +18,6 @@ var listMonthlyMories_1 = require("./listMonthlyMories");
 __createBinding(exports, listMonthlyMories_1, "listMonthlyMories");
 var getWeeklyReport_1 = require("./getWeeklyReport");
 __createBinding(exports, getWeeklyReport_1, "getWeeklyReport");
+var getRecentReportNotSeenYet_1 = require("./getRecentReportNotSeenYet");
+__createBinding(exports, getRecentReportNotSeenYet_1, "getRecentReportNotSeenYet");
 //# sourceMappingURL=index.js.map

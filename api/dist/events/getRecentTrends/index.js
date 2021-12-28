@@ -56,7 +56,7 @@ var getRecentTrends = function (event, context, callback) { return __awaiter(voi
         switch (_a.label) {
             case 0:
                 args = event.arguments;
-                return [4 /*yield*/, trend_1.getRecentItems(args.userId)];
+                return [4 /*yield*/, (0, trend_1.getRecentItems)(args.userId)];
             case 1:
                 trends = _a.sent();
                 callback(null, trends.map(function (v) {
