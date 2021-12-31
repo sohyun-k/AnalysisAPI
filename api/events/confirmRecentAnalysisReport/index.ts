@@ -1,0 +1,30 @@
+type Arguments = {
+  reportType: "weekly" | "monthly";
+  userId: string;
+  year: number;
+  month: number;
+  weekNumber: number;
+};
+
+/**
+ * 사용자가 가장 최근 보고서를 읽었음을 알려주는 쿼리.
+ * 디바이스에서 리포트를 dismiss할 때 이 쿼리가 실행됨.
+ * User 테이블에서 가장 최근에 읽은 리포트 날짜를 기록해둠.
+ */
+export const confirmRecentAnalysisReport = async (event, context, callback) => {
+  var args = event.arguments as Arguments;
+
+  switch (args.reportType) {
+    case "monthly":
+      // userId를 사용해서 'year-month' 저장
+      break;
+    case "weekly":
+      // userId를 사용해서 'year-weekNumber' 저장
+      break;
+    default:
+      console.log("Error");
+      break;
+  }
+
+  callback(null);
+};

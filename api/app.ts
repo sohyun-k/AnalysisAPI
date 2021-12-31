@@ -1,4 +1,17 @@
-import { createdMory, getRecentReportNotSeenYet, getRecentTrends, getUserAnimalType, getWeeklyReport, listMonthlyMories } from "./events";
+import { getMonthlyItems } from "./datasource/mory";
+import {
+  confirmRecentAnalysisReport,
+  createdMory,
+  createGeoClusterCenterInfo,
+  createMonthlyReportSnapshot,
+  createUserClusterInfo,
+  createWeeklyReportSnapshot,
+  getRecentReportNotSeenYet,
+  getRecentTrends,
+  getUserAnimalType,
+  getWeeklyReport,
+  listMonthlyMories,
+} from "./events";
 import { deletedMory } from "./events/deletedMory/deletedMory";
 
 type Event = {
@@ -11,6 +24,11 @@ type Event = {
     | "getWeeklyReport"
     | "getMonthlyReport"
     | "getRecentReportNotSeenYet"
+    | "createWeeklyReportSnapshot"
+    | "createMonthlyReportSnapshot"
+    | "createUserClusterInfo"
+    | "createGeoClusterCenterInfo"
+    | "confirmRecentAnalysisReport"
     | "getRecentTrends";
   arguments: any;
 };
@@ -38,8 +56,26 @@ export const lambdaHandler = async (event: Event, context, callback) => {
     case "getWeeklyReport":
       await getWeeklyReport(event, context, callback);
       break;
+    case "getMonthlyReport":
+      await getMonthlyItems(event, context, callback);
+      break;
     case "getRecentReportNotSeenYet":
       await getRecentReportNotSeenYet(event, context, callback);
+      break;
+    case "createWeeklyReportSnapshot":
+      await createWeeklyReportSnapshot(event, context, callback);
+      break;
+    case "createMonthlyReportSnapshot":
+      await createMonthlyReportSnapshot(event, context, callback);
+      break;
+    case "createUserClusterInfo":
+      await createUserClusterInfo(event, context, callback);
+      break;
+    case "createGeoClusterCenterInfo":
+      await createGeoClusterCenterInfo(event, context, callback);
+      break;
+    case "confirmRecentAnalysisReport":
+      await confirmRecentAnalysisReport(event, context, callback);
       break;
     default:
       break;
