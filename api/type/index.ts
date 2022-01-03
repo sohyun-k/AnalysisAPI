@@ -174,3 +174,8 @@ export type WeeklyReport = {
   geoClusterAnalysis: GeoClusterAnalysis;
   mories: any;
 };
+
+export enum AnalysisReportType {
+  Weekly,
+  Monthly,
+}
