@@ -1,6 +1,6 @@
 "use strict";
 exports.__esModule = true;
-exports.Gender = exports.Emotion = void 0;
+exports.AnalysisReportType = exports.Gender = exports.Emotion = void 0;
 var Emotion;
 (function (Emotion) {
     Emotion["angry"] = "angry";
@@ -25,4 +25,9 @@ var Gender;
     Gender[Gender["male"] = 0] = "male";
     Gender[Gender["female"] = 1] = "female";
 })(Gender = exports.Gender || (exports.Gender = {}));
+var AnalysisReportType;
+(function (AnalysisReportType) {
+    AnalysisReportType[AnalysisReportType["Weekly"] = 0] = "Weekly";
+    AnalysisReportType[AnalysisReportType["Monthly"] = 1] = "Monthly";
+})(AnalysisReportType = exports.AnalysisReportType || (exports.AnalysisReportType = {}));
 //# sourceMappingURL=index.js.map

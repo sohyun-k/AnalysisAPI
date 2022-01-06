@@ -13,3 +13,4 @@ export { default as getUserEmotionCountsInWeek } from "./getUserEmotionCountsInW
 export { default as getAllUserRanksInWeek } from "./getAllUserRanksInWeek";
 export { default as getUserMoryCountsGroupByDateInWeek } from "./getUserMoryCountsGroupByDateInWeek";
 export { default as getUserMorysInWeek } from "./getUserMorysInWeek";
+export { default as getUserEmotionCountsGroupByDateInWeek } from "./getUserEmotionCountsGroupByDateInWeek";

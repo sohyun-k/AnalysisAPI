@@ -4,6 +4,7 @@ import {
   getAllMoryCountsInWeek,
   getAllUserCountsInWeek,
   getAllUserRanksInWeek,
+  getUserEmotionCountsGroupByDateInWeek,
   getUserEmotionCountsInWeek,
   getUserMoryCountsGroupByDateInWeek,
   getUserMorysInWeek,
@@ -14,6 +15,7 @@ import {
   EmotionChange,
   EmotionCount,
   GeoClusterAnalysis,
+  GridHeatmapEmotionSources,
   GridHeatmapSources,
   Mory,
   MoryDateCount,
@@ -52,7 +54,11 @@ export const _getWeeklyReport = async (args: Arguments): Promise<WeeklyReport> =
 
   const { weeklyStartDate, weeklyEndDate, month } = getThisWeekInfo(year, weekNumber);
   const { emotionCounts, userCounts, userRanks, moryCounts } = await getTotalWeeklyData(year, weekNumber);
-  const { previousWeekEmotionCount, thisWeekEmotionCount, userMories, createdDates } = await getUserWeeklyData(year, weekNumber, userId);
+  const { previousWeekEmotionCount, thisWeekEmotionCount, userMories, createdDates, createdDatesWithEmotions } = await getUserWeeklyData(
+    year,
+    weekNumber,
+    userId
+  );
 
   if (previousWeekEmotionCount.length === 0 && thisWeekEmotionCount.length === 0) {
     return result;
@@ -65,7 +71,15 @@ export const _getWeeklyReport = async (args: Arguments): Promise<WeeklyReport> =
     weekNumber,
     weeklyStartDate,
     weeklyEndDate,
-    weeklyStatistic: await getWeeklyStatistic(thisWeekEmotionCount, previousWeekEmotionCount, createdDates, userCounts, userRanks, userId),
+    weeklyStatistic: await getWeeklyStatistic(
+      thisWeekEmotionCount,
+      previousWeekEmotionCount,
+      createdDates,
+      createdDatesWithEmotions,
+      userCounts,
+      userRanks,
+      userId
+    ),
     userSentimentAnalysis: getUserSentimentAnalysis(previousWeekEmotionCount, thisWeekEmotionCount),
     userClusterAnalysis: getUserClusterAnalysis(),
     geoClusterAnalysis: getGeoClusterAnalysis(userMories),
@@ -113,12 +127,15 @@ const getUserWeeklyData = async (year: number, weekNumber: number, userId: strin
 
   const createdDates = await getUserMoryCountsGroupByDateInWeek(year, weekNumber, userId);
 
+  const createdDatesWithEmotions = await getUserEmotionCountsGroupByDateInWeek(year, weekNumber, userId);
+
   const userMories = await getUserMorysInWeek(year, weekNumber, userId);
 
   return {
     previousWeekEmotionCount,
     thisWeekEmotionCount,
     createdDates,
+    createdDatesWithEmotions,
     userMories,
   };
 };
@@ -127,6 +144,7 @@ const getWeeklyStatistic = async (
   thisWeekEmotionCount: EmotionCount[],
   previousWeekEmotionCount: EmotionCount[],
   createdDates: MoryDateCount[],
+  createdDatesWithEmotions: Emotion[][],
   userCounts: number,
   userRanks: UserRanks,
   userId: string
@@ -143,12 +161,42 @@ const getWeeklyStatistic = async (
     };
   };
 
+  const getGridHeatmapEmotionSources = (): GridHeatmapEmotionSources => {
+    const total = createdDatesWithEmotions.length;
+    const days = createdDatesWithEmotions.reduce((acc, cur) => (cur.length > 0 ? acc + 1 : acc), 0);
+
+    return {
+      text: `${total}일 중 ${days}일 (${Math.round((days / total) * 100)}%)`,
+      data: createdDatesWithEmotions,
+    };
+  };
+
+  const getMostCreatedEmotion = (): Emotion => {
+    if (thisWeekEmotionCount.length) {
+      var maxVal = 0;
+      var emo = null;
+
+      thisWeekEmotionCount.forEach((v) => {
+        if (v.num > maxVal) {
+          maxVal = v.num;
+          emo = v.emotion;
+        }
+      });
+
+      return emo;
+    }
+
+    return null;
+  };
+
   return {
     totalCount: thisWeekEmotionCount.reduce((acc, cur) => acc + cur.num, 0),
     thisWeekEmotionCount,
     previousWeekEmotionCount,
     rankPercent: rankPercentage,
     gridHeatmapSources: getGridHeatmapSources(),
+    gridHeatmapEmotionSources: getGridHeatmapEmotionSources(),
+    mostCreatedEmotion: getMostCreatedEmotion(),
   };
 };
 
@@ -218,9 +266,21 @@ const getUserClusterAnalysis = (): UserClusterAnalysis => {
     userAge: null,
     userBirthYear: null,
     userGender: null,
-    negatvie: null,
-    positive: null,
-    neutral: null,
+    negatvie: {
+      population: 0,
+      sample: 0,
+      text: "",
+    },
+    positive: {
+      population: 0,
+      sample: 0,
+      text: "",
+    },
+    neutral: {
+      population: 0,
+      sample: 0,
+      text: "",
+    },
   };
 };
 

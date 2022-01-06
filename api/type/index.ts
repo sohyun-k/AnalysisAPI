@@ -149,6 +149,11 @@ export type GridHeatmapSources = {
   data: number[];
 };
 
+export type GridHeatmapEmotionSources = {
+  text: String;
+  data: Emotion[][];
+};
+
 export type WeeklyStatistic = {
   // 해당 week에 작성한 mory의 전체 개수
   totalCount: number;
@@ -160,6 +165,10 @@ export type WeeklyStatistic = {
   rankPercent: number;
 
   gridHeatmapSources: GridHeatmapSources;
+
+  gridHeatmapEmotionSources: GridHeatmapEmotionSources;
+
+  mostCreatedEmotion: Emotion;
 };
 
 export type WeeklyReport = {

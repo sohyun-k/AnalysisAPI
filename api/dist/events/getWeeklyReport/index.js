@@ -73,7 +73,7 @@ var getWeeklyReport = function (event, context, callback) { return __awaiter(voi
 }); };
 exports.getWeeklyReport = getWeeklyReport;
 var _getWeeklyReport = function (args) { return __awaiter(void 0, void 0, void 0, function () {
-    var result, year, weekNumber, userId, _a, weeklyStartDate, weeklyEndDate, month, _b, emotionCounts, userCounts, userRanks, moryCounts, _c, previousWeekEmotionCount, thisWeekEmotionCount, userMories, createdDates;
+    var result, year, weekNumber, userId, _a, weeklyStartDate, weeklyEndDate, month, _b, emotionCounts, userCounts, userRanks, moryCounts, _c, previousWeekEmotionCount, thisWeekEmotionCount, userMories, createdDates, createdDatesWithEmotions;
     var _d;
     return __generator(this, function (_e) {
         switch (_e.label) {
@@ -87,7 +87,7 @@ var _getWeeklyReport = function (args) { return __awaiter(void 0, void 0, void 0
                 _b = _e.sent(), emotionCounts = _b.emotionCounts, userCounts = _b.userCounts, userRanks = _b.userRanks, moryCounts = _b.moryCounts;
                 return [4 /*yield*/, getUserWeeklyData(year, weekNumber, userId)];
             case 2:
-                _c = _e.sent(), previousWeekEmotionCount = _c.previousWeekEmotionCount, thisWeekEmotionCount = _c.thisWeekEmotionCount, userMories = _c.userMories, createdDates = _c.createdDates;
+                _c = _e.sent(), previousWeekEmotionCount = _c.previousWeekEmotionCount, thisWeekEmotionCount = _c.thisWeekEmotionCount, userMories = _c.userMories, createdDates = _c.createdDates, createdDatesWithEmotions = _c.createdDatesWithEmotions;
                 if (previousWeekEmotionCount.length === 0 && thisWeekEmotionCount.length === 0) {
                     return [2 /*return*/, result];
                 }
@@ -98,7 +98,7 @@ var _getWeeklyReport = function (args) { return __awaiter(void 0, void 0, void 0
                     weeklyStartDate: weeklyStartDate,
                     weeklyEndDate: weeklyEndDate
                 };
-                return [4 /*yield*/, getWeeklyStatistic(thisWeekEmotionCount, previousWeekEmotionCount, createdDates, userCounts, userRanks, userId)];
+                return [4 /*yield*/, getWeeklyStatistic(thisWeekEmotionCount, previousWeekEmotionCount, createdDates, createdDatesWithEmotions, userCounts, userRanks, userId)];
             case 3:
                 _d.weeklyStatistic = _e.sent(),
                     _d.userSentimentAnalysis = getUserSentimentAnalysis(previousWeekEmotionCount, thisWeekEmotionCount),
@@ -146,7 +146,7 @@ var getTotalWeeklyData = function (year, weekNumber) { return __awaiter(void 0, 
     });
 }); };
 var getUserWeeklyData = function (year, weekNumber, userId) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, previousWeekYear, previousWeekNumber, thisWeekEmotionCount, previousWeekEmotionCount, createdDates, userMories;
+    var _a, previousWeekYear, previousWeekNumber, thisWeekEmotionCount, previousWeekEmotionCount, createdDates, createdDatesWithEmotions, userMories;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -160,20 +160,24 @@ var getUserWeeklyData = function (year, weekNumber, userId) { return __awaiter(v
                 return [4 /*yield*/, (0, mory_1.getUserMoryCountsGroupByDateInWeek)(year, weekNumber, userId)];
             case 3:
                 createdDates = _b.sent();
-                return [4 /*yield*/, (0, mory_1.getUserMorysInWeek)(year, weekNumber, userId)];
+                return [4 /*yield*/, (0, mory_1.getUserEmotionCountsGroupByDateInWeek)(year, weekNumber, userId)];
             case 4:
+                createdDatesWithEmotions = _b.sent();
+                return [4 /*yield*/, (0, mory_1.getUserMorysInWeek)(year, weekNumber, userId)];
+            case 5:
                 userMories = _b.sent();
                 return [2 /*return*/, {
                         previousWeekEmotionCount: previousWeekEmotionCount,
                         thisWeekEmotionCount: thisWeekEmotionCount,
                         createdDates: createdDates,
+                        createdDatesWithEmotions: createdDatesWithEmotions,
                         userMories: userMories
                     }];
         }
     });
 }); };
-var getWeeklyStatistic = function (thisWeekEmotionCount, previousWeekEmotionCount, createdDates, userCounts, userRanks, userId) { return __awaiter(void 0, void 0, void 0, function () {
-    var rankPercentage, getGridHeatmapSources;
+var getWeeklyStatistic = function (thisWeekEmotionCount, previousWeekEmotionCount, createdDates, createdDatesWithEmotions, userCounts, userRanks, userId) { return __awaiter(void 0, void 0, void 0, function () {
+    var rankPercentage, getGridHeatmapSources, getGridHeatmapEmotionSources, getMostCreatedEmotion;
     return __generator(this, function (_a) {
         rankPercentage = userId in userRanks ? (userRanks[userId] / userCounts) * 100 : 100.0;
         getGridHeatmapSources = function () {
@@ -184,12 +188,36 @@ var getWeeklyStatistic = function (thisWeekEmotionCount, previousWeekEmotionCoun
                 data: createdDates.map(function (v) { return v.count; })
             };
         };
+        getGridHeatmapEmotionSources = function () {
+            var total = createdDatesWithEmotions.length;
+            var days = createdDatesWithEmotions.reduce(function (acc, cur) { return (cur.length > 0 ? acc + 1 : acc); }, 0);
+            return {
+                text: total + "\uC77C \uC911 " + days + "\uC77C (" + Math.round((days / total) * 100) + "%)",
+                data: createdDatesWithEmotions
+            };
+        };
+        getMostCreatedEmotion = function () {
+            if (thisWeekEmotionCount.length) {
+                var maxVal = 0;
+                var emo = null;
+                thisWeekEmotionCount.forEach(function (v) {
+                    if (v.num > maxVal) {
+                        maxVal = v.num;
+                        emo = v.emotion;
+                    }
+                });
+                return emo;
+            }
+            return null;
+        };
         return [2 /*return*/, {
                 totalCount: thisWeekEmotionCount.reduce(function (acc, cur) { return acc + cur.num; }, 0),
                 thisWeekEmotionCount: thisWeekEmotionCount,
                 previousWeekEmotionCount: previousWeekEmotionCount,
                 rankPercent: rankPercentage,
-                gridHeatmapSources: getGridHeatmapSources()
+                gridHeatmapSources: getGridHeatmapSources(),
+                gridHeatmapEmotionSources: getGridHeatmapEmotionSources(),
+                mostCreatedEmotion: getMostCreatedEmotion()
             }];
     });
 }); };
@@ -256,9 +284,21 @@ var getUserClusterAnalysis = function () {
         userAge: null,
         userBirthYear: null,
         userGender: null,
-        negatvie: null,
-        positive: null,
-        neutral: null
+        negatvie: {
+            population: 0,
+            sample: 0,
+            text: ""
+        },
+        positive: {
+            population: 0,
+            sample: 0,
+            text: ""
+        },
+        neutral: {
+            population: 0,
+            sample: 0,
+            text: ""
+        }
     };
 };
 var getGeoClusterAnalysis = function (userMories) {

@@ -37,6 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 exports.lambdaHandler = void 0;
+var mory_1 = require("./datasource/mory");
 var events_1 = require("./events");
 var deletedMory_1 = require("./events/deletedMory/deletedMory");
 var lambdaHandler = function (event, context, callback) { return __awaiter(void 0, void 0, void 0, function () {
@@ -54,40 +55,70 @@ var lambdaHandler = function (event, context, callback) { return __awaiter(void 
                     case "listMonthlyMories": return [3 /*break*/, 9];
                     case "listTrends": return [3 /*break*/, 11];
                     case "getWeeklyReport": return [3 /*break*/, 12];
-                    case "getRecentReportNotSeenYet": return [3 /*break*/, 14];
+                    case "getMonthlyReport": return [3 /*break*/, 14];
+                    case "getRecentReportNotSeenYet": return [3 /*break*/, 16];
+                    case "createWeeklyReportSnapshot": return [3 /*break*/, 18];
+                    case "createMonthlyReportSnapshot": return [3 /*break*/, 20];
+                    case "createUserClusterInfo": return [3 /*break*/, 22];
+                    case "createGeoClusterCenterInfo": return [3 /*break*/, 24];
+                    case "confirmRecentAnalysisReport": return [3 /*break*/, 26];
                 }
-                return [3 /*break*/, 16];
+                return [3 /*break*/, 28];
             case 1: return [4 /*yield*/, (0, events_1.getUserAnimalType)(event, context, callback)];
             case 2:
                 _b.sent();
-                return [3 /*break*/, 17];
+                return [3 /*break*/, 29];
             case 3: return [4 /*yield*/, (0, events_1.createdMory)(event, context, callback)];
             case 4:
                 _b.sent();
-                return [3 /*break*/, 17];
+                return [3 /*break*/, 29];
             case 5: return [4 /*yield*/, (0, deletedMory_1.deletedMory)(event, context, callback)];
             case 6:
                 _b.sent();
-                return [3 /*break*/, 17];
+                return [3 /*break*/, 29];
             case 7: return [4 /*yield*/, (0, events_1.getRecentTrends)(event, context, callback)];
             case 8:
                 _b.sent();
-                return [3 /*break*/, 17];
+                return [3 /*break*/, 29];
             case 9: return [4 /*yield*/, (0, events_1.listMonthlyMories)(event, context, callback)];
             case 10:
                 _b.sent();
-                return [3 /*break*/, 17];
-            case 11: return [3 /*break*/, 17];
+                return [3 /*break*/, 29];
+            case 11: return [3 /*break*/, 29];
             case 12: return [4 /*yield*/, (0, events_1.getWeeklyReport)(event, context, callback)];
             case 13:
                 _b.sent();
-                return [3 /*break*/, 17];
-            case 14: return [4 /*yield*/, (0, events_1.getRecentReportNotSeenYet)(event, context, callback)];
+                return [3 /*break*/, 29];
+            case 14: return [4 /*yield*/, (0, mory_1.getMonthlyItems)(event, context, callback)];
             case 15:
                 _b.sent();
-                return [3 /*break*/, 17];
-            case 16: return [3 /*break*/, 17];
-            case 17: return [2 /*return*/];
+                return [3 /*break*/, 29];
+            case 16: return [4 /*yield*/, (0, events_1.getRecentReportNotSeenYet)(event, context, callback)];
+            case 17:
+                _b.sent();
+                return [3 /*break*/, 29];
+            case 18: return [4 /*yield*/, (0, events_1.createWeeklyReportSnapshot)(event, context, callback)];
+            case 19:
+                _b.sent();
+                return [3 /*break*/, 29];
+            case 20: return [4 /*yield*/, (0, events_1.createMonthlyReportSnapshot)(event, context, callback)];
+            case 21:
+                _b.sent();
+                return [3 /*break*/, 29];
+            case 22: return [4 /*yield*/, (0, events_1.createUserClusterInfo)(event, context, callback)];
+            case 23:
+                _b.sent();
+                return [3 /*break*/, 29];
+            case 24: return [4 /*yield*/, (0, events_1.createGeoClusterCenterInfo)(event, context, callback)];
+            case 25:
+                _b.sent();
+                return [3 /*break*/, 29];
+            case 26: return [4 /*yield*/, (0, events_1.confirmRecentAnalysisReport)(event, context, callback)];
+            case 27:
+                _b.sent();
+                return [3 /*break*/, 29];
+            case 28: return [3 /*break*/, 29];
+            case 29: return [2 /*return*/];
         }
     });
 }); };
