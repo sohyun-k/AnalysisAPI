@@ -33,7 +33,7 @@ const postProcessOfMoryDateCount = (rows: MoryDateCount[], year: number, weekNum
   var result = [];
 
   for (let i = 0; i < 7; i++) {
-    const d = moment().year(year).isoWeek(weekNumber).day(i).format("YYYY-MM-DD").toString();
+    const d = moment().isoWeek(weekNumber).year(year).day(i).format("YYYY-MM-DD").toString();
 
     if (i_r < rows.length && moment(rows[i_r].date).format("YYYY-MM-DD").toString() === d) {
       result.push({ date: d, count: Number(rows[i_r].count) });

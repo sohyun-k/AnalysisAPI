@@ -40,7 +40,7 @@ const postProcessOfMoryDateCount = (rows: EmotionAndDate[], year: number, weekNu
   const DAYS_OF_WEEK = 7;
 
   while (i_d < DAYS_OF_WEEK) {
-    const dateOfWeek = moment().year(year).isoWeek(weekNumber).day(i_d).format("YYYY-MM-DD").toString();
+    const dateOfWeek = moment().isoWeek(weekNumber).year(year).day(i_d).format("YYYY-MM-DD").toString();
 
     if (i_r < rows.length) {
       const dateOfRow = moment(rows[i_r].date).format("YYYY-MM-DD").toString();

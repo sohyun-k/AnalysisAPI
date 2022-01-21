@@ -37,16 +37,108 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 exports.createMonthlyReportSnapshot = void 0;
+var crypto_1 = require("crypto");
+var connection_1 = require("../../datasource/connection");
+var mory_1 = require("../../datasource/mory");
 var createMonthlyReportSnapshot = function (event, context, callback) { return __awaiter(void 0, void 0, void 0, function () {
-    var result;
+    var result, month, year, allThisMonthEmotionCount, total_count, emotion_count_id, emotion_sql_str, emotion_sql_val_str, emotion_sql_values, idx, emotion_count_sql, num_user, monthly_all_sql, monthly_all_values, userRank, users, idx, userMorys, userMoryCounts, user_emotion_count_id, user_emotion_count, user_emotion_sql_str, user_emotion_sql_val_str, user_emotion_sql_values, emotion_idx, user_emotion_count_sql;
     return __generator(this, function (_a) {
-        //TODO:
-        // 현재 year, month 구하기
-        // ! 월말이 끝난 시점에 실행되는 쿼리이기 때문에 현재 시간으로 구하면 다음달이 됩니다.
-        //TODO: 사용자 전체에 대한 데이터 구하고 저장하기
-        // monthly_all 테이블에 저장하는 데이터를 구하기
-        callback(null, result);
-        return [2 /*return*/];
+        switch (_a.label) {
+            case 0:
+                month = 11;
+                year = 2021;
+                return [4 /*yield*/, (0, mory_1.getAllEmotionCountsInMonth)(Number(year), Number(month))];
+            case 1:
+                allThisMonthEmotionCount = _a.sent();
+                return [4 /*yield*/, (0, mory_1.getAllMoryCountsInMonth)(Number(year), Number(month))];
+            case 2:
+                total_count = _a.sent();
+                emotion_count_id = 'monthly-' + String(year) + '-' + String(month);
+                emotion_sql_str = "(id";
+                emotion_sql_val_str = "($1, ";
+                emotion_sql_values = [];
+                emotion_sql_values.push(emotion_count_id);
+                for (idx = 0; idx < allThisMonthEmotionCount.length; idx++) {
+                    emotion_sql_str += ", " + allThisMonthEmotionCount[idx].emotion;
+                    emotion_sql_values.push(allThisMonthEmotionCount[idx].count);
+                    emotion_sql_val_str += "$" + String(idx + 2);
+                    if (idx < allThisMonthEmotionCount.length - 1) {
+                        emotion_sql_val_str += ", ";
+                    }
+                }
+                emotion_sql_str += ')';
+                emotion_sql_val_str += ')';
+                emotion_count_sql = 'INSERT INTO emotion_count ' + emotion_sql_str + " VALUES " + emotion_sql_val_str + " RETURNING *";
+                connection_1.client.query(emotion_count_sql, emotion_sql_values, function (err, res) {
+                    if (err) {
+                        console.log(err.stack);
+                    }
+                    else {
+                        console.log(res.rows[0]);
+                    }
+                });
+                return [4 /*yield*/, (0, mory_1.getAllUserCountsInMonth)(year, month)];
+            case 3:
+                num_user = _a.sent();
+                monthly_all_sql = "INSERT INTO monthly_all (id, year, month, total_count, num_user, emotion_count_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *";
+                monthly_all_values = [(0, crypto_1.randomUUID)().toString(), year, month, total_count, num_user, emotion_count_id];
+                connection_1.client.query(monthly_all_sql, monthly_all_values, function (err, res) {
+                    if (err) {
+                        console.log(err.stack);
+                    }
+                    else {
+                        console.log(res.rows[0]);
+                    }
+                });
+                return [4 /*yield*/, (0, mory_1.getAllUserRanksInMonth)(year, month)];
+            case 4:
+                userRank = _a.sent();
+                users = Object.keys(userRank);
+                idx = 0;
+                _a.label = 5;
+            case 5:
+                if (!(idx < users.length)) return [3 /*break*/, 9];
+                return [4 /*yield*/, (0, mory_1.getUserMorysInMonth)(year, month, users[idx])];
+            case 6:
+                userMorys = _a.sent();
+                userMoryCounts = userMorys.length;
+                if (userMoryCounts == 0)
+                    return [3 /*break*/, 8];
+                user_emotion_count_id = users[idx] + '-' + String(year) + '-' + String(month);
+                return [4 /*yield*/, (0, mory_1.getUserEmotionCountsInMonth)(year, month, users[idx])];
+            case 7:
+                user_emotion_count = _a.sent();
+                user_emotion_sql_str = "(id";
+                user_emotion_sql_val_str = "($1, ";
+                user_emotion_sql_values = [];
+                user_emotion_sql_values.push(user_emotion_count_id);
+                for (emotion_idx = 0; emotion_idx < user_emotion_count.length; emotion_idx++) {
+                    user_emotion_sql_str += ", " + user_emotion_count[emotion_idx].emotion;
+                    user_emotion_sql_values.push(user_emotion_count[emotion_idx].num);
+                    user_emotion_sql_val_str += "$" + String(emotion_idx + 2);
+                    if (emotion_idx < user_emotion_count.length - 1) {
+                        user_emotion_sql_val_str += ", ";
+                    }
+                }
+                user_emotion_sql_str += ')';
+                user_emotion_sql_val_str += ')';
+                user_emotion_count_sql = 'INSERT INTO emotion_count ' + user_emotion_sql_str + " VALUES " + user_emotion_sql_val_str + " RETURNING *";
+                connection_1.client.query(user_emotion_count_sql, user_emotion_sql_values, function (err, res) {
+                    if (err) {
+                        console.log(err.stack);
+                    }
+                    else {
+                        console.log(res.rows[0]);
+                    }
+                });
+                _a.label = 8;
+            case 8:
+                idx++;
+                return [3 /*break*/, 5];
+            case 9:
+                callback(null, result);
+                return [2 /*return*/];
+        }
     });
 }); };
 exports.createMonthlyReportSnapshot = createMonthlyReportSnapshot;

@@ -1,0 +1,5 @@
+yarn run v1.22.17
+$ tsc && cd .. && sam build && sam local invoke -e ./events/createWeeklyReportSnapshot.json
+events/getMonthlyReport/index.ts(111,30): error TS2304: Cannot find name 'getUserMoryCountsGroupByDateInMonth'.
+events/getMonthlyReport/index.ts(113,42): error TS2304: Cannot find name 'getUserEmotionCountsGroupByDateInMonth'.
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.

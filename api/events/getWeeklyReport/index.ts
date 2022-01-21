@@ -303,22 +303,22 @@ const getMories = async (moryIds: MoryId[]) => {
 };
 
 const getPreviousWeekNumber = (year: number, weekNumber: number) => {
-  const previousWeekNumber = moment().year(year).isoWeek(weekNumber).subtract(7, "d").isoWeek();
-  const previousWeekYear = moment().year(year).isoWeek(weekNumber).subtract(7, "d").year();
+  const previousWeekNumber = moment().isoWeek(weekNumber).year(year).subtract(7, "d").isoWeek();
+  const previousWeekYear = moment().isoWeek(weekNumber).year(year).subtract(7, "d").year();
 
   return { previousWeekNumber, previousWeekYear };
 };
 
 const getWeeklyStartDate = (year: number, weekNumber: number) => {
-  return moment().year(year).isoWeek(weekNumber).day(0).toDate();
+  return moment().isoWeek(weekNumber).year(year).day(0).toDate();
 };
 
 const getWeeklyEndDate = (year: number, weekNumber: number) => {
-  return moment().year(year).isoWeek(weekNumber).day(6).toDate();
+  return moment().isoWeek(weekNumber).year(year).day(6).toDate();
 };
 
 const getMonthFromWeekNumber = (year: number, weekNumber: number) => {
-  return moment().year(year).isoWeek(weekNumber).month() + 1;
+  return moment().isoWeek(weekNumber).year(year).month() + 1;
 };
 
 type SentimentCount = {

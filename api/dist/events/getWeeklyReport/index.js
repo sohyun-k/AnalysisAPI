@@ -324,18 +324,18 @@ var getMories = function (moryIds) { return __awaiter(void 0, void 0, void 0, fu
     });
 }); };
 var getPreviousWeekNumber = function (year, weekNumber) {
-    var previousWeekNumber = (0, moment_1["default"])().year(year).isoWeek(weekNumber).subtract(7, "d").isoWeek();
-    var previousWeekYear = (0, moment_1["default"])().year(year).isoWeek(weekNumber).subtract(7, "d").year();
+    var previousWeekNumber = (0, moment_1["default"])().isoWeek(weekNumber).year(year).subtract(7, "d").isoWeek();
+    var previousWeekYear = (0, moment_1["default"])().isoWeek(weekNumber).year(year).subtract(7, "d").year();
     return { previousWeekNumber: previousWeekNumber, previousWeekYear: previousWeekYear };
 };
 var getWeeklyStartDate = function (year, weekNumber) {
-    return (0, moment_1["default"])().year(year).isoWeek(weekNumber).day(0).toDate();
+    return (0, moment_1["default"])().isoWeek(weekNumber).year(year).day(0).toDate();
 };
 var getWeeklyEndDate = function (year, weekNumber) {
-    return (0, moment_1["default"])().year(year).isoWeek(weekNumber).day(6).toDate();
+    return (0, moment_1["default"])().isoWeek(weekNumber).year(year).day(6).toDate();
 };
 var getMonthFromWeekNumber = function (year, weekNumber) {
-    return (0, moment_1["default"])().year(year).isoWeek(weekNumber).month() + 1;
+    return (0, moment_1["default"])().isoWeek(weekNumber).year(year).month() + 1;
 };
 var setimentCountReducer = function (emotionCounts) {
     return emotionCounts.reduce(function (acc, cur) {

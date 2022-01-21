@@ -15,6 +15,7 @@ Resources:
       - x86_64
       ImageUri: analysisapifunction:nodejs14.x-v1
     Metadata:
-      DockerTag: nodejs14.x-v1
       DockerContext: ./api
+      DockerTag: nodejs14.x-v1
       Dockerfile: Dockerfile
+      SamResourceId: AnalysisAPIFunction

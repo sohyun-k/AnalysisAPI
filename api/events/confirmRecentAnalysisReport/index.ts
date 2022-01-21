@@ -1,3 +1,4 @@
+import { client } from "../../datasource/connection";
 type Arguments = {
   reportType: "weekly" | "monthly";
   userId: string;
@@ -17,9 +18,29 @@ export const confirmRecentAnalysisReport = async (event, context, callback) => {
   switch (args.reportType) {
     case "monthly":
       // userId를 사용해서 'year-month' 저장
+      var value = [args.userId, String(args.year)+"-"+String(args.month)];
+      var sql = 'UPDATE "User" SET recent_monthly_report = $1 WHERE "User".id = $2';
+      client.query(sql, value, (err,res) => {
+        if(err) {
+          console.log(err.stack);
+        }
+        else{
+          console.log(res.rows[0]);
+        }
+      });
       break;
     case "weekly":
       // userId를 사용해서 'year-weekNumber' 저장
+      var value = [args.userId, String(args.year)+"-"+String(args.weekNumber)];
+      var sql = 'UPDATE "User" SET recent_weekly_report = $1 WHERE "User".id = $2';
+      client.query(sql, value, (err,res) => {
+        if(err) {
+          console.log(err.stack);
+        }
+        else{
+          console.log(res.rows[0]);
+        }
+      });
       break;
     default:
       console.log("Error");

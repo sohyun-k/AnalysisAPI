@@ -37,21 +37,40 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 exports.__esModule = true;
 exports.confirmRecentAnalysisReport = void 0;
+var connection_1 = require("../../datasource/connection");
 /**
  * 사용자가 가장 최근 보고서를 읽었음을 알려주는 쿼리.
  * 디바이스에서 리포트를 dismiss할 때 이 쿼리가 실행됨.
  * User 테이블에서 가장 최근에 읽은 리포트 날짜를 기록해둠.
  */
 var confirmRecentAnalysisReport = function (event, context, callback) { return __awaiter(void 0, void 0, void 0, function () {
-    var args;
+    var args, value, sql, value, sql;
     return __generator(this, function (_a) {
         args = event.arguments;
         switch (args.reportType) {
             case "monthly":
-                // userId를 사용해서 'year-month' 저장
+                value = [args.userId, String(args.year) + "-" + String(args.month)];
+                sql = 'UPDATE "User" SET recent_monthly_report = $1 WHERE "User".id = $2';
+                connection_1.client.query(sql, value, function (err, res) {
+                    if (err) {
+                        console.log(err.stack);
+                    }
+                    else {
+                        console.log(res.rows[0]);
+                    }
+                });
                 break;
             case "weekly":
-                // userId를 사용해서 'year-weekNumber' 저장
+                value = [args.userId, String(args.year) + "-" + String(args.weekNumber)];
+                sql = 'UPDATE "User" SET recent_weekly_report = $1 WHERE "User".id = $2';
+                connection_1.client.query(sql, value, function (err, res) {
+                    if (err) {
+                        console.log(err.stack);
+                    }
+                    else {
+                        console.log(res.rows[0]);
+                    }
+                });
                 break;
             default:
                 console.log("Error");

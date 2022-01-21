@@ -184,6 +184,33 @@ export type WeeklyReport = {
   mories: any;
 };
 
+export type MonthlyStatistic = {
+  // 해당 week에 작성한 mory의 전체 개수
+  totalCount: number;
+  // 해당 week에 작성한 mory의 감정별 개수
+  thisMonthEmotionCount: EmotionCount[];
+  // 이전 week에 작성한 mory의 감정별 개수
+  previousMonthEmotionCount: EmotionCount[];
+  // 해당 week의 순위 (%)
+  rankPercent: number;
+
+  gridHeatmapSources: GridHeatmapSources;
+
+  gridHeatmapEmotionSources: GridHeatmapEmotionSources;
+
+  mostCreatedEmotion: Emotion;
+};
+
+export type MonthlyReport = {
+  year: number;
+  month: number;
+  monthlyStatistic: MonthlyStatistic;
+  userSentimentAnalysis: UserSentimentAnalysis;
+  userClusterAnalysis: UserClusterAnalysis;
+  geoClusterAnalysis: GeoClusterAnalysis;
+  mories: any;
+};
+
 export enum AnalysisReportType {
   Weekly,
   Monthly,
